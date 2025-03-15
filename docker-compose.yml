@@ -30,7 +30,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   app:
-    image: yaroslavashyt/node-app:latest 
+    image: yaroslavashyt/node-app:1.0
     container_name: app-container
     networks:
       - public-net
