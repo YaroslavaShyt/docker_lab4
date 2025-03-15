@@ -1,0 +1,54 @@
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: my_test_db
+    networks:
+      - public-net
+      - private-net
+    ports:
+      - "3307:3307"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      POSTGRES_PASSWORD: root_password
+      POSTGRES_DB: my_test_db
+    networks:
+      - public-net
+      - private-net
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    container_name: app-container
+    networks:
+      - public-net
+      - private-net
+    ports:
+      - "5000:5000"
+    extra_hosts:
+      - "mysql_db:172.17.0.1"
+      - "pg_db:172.17.0.1"
+    depends_on:
+      - mysql
+      - postgres
+
+networks:
+  public-net:
+    driver: bridge
+  private-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  postgres-data:
